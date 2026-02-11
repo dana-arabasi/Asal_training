@@ -480,9 +480,233 @@ class Dog:
     def __init__(self, name, age):
         self.name = name
         self.age = age
+
+    def __str__(self):
+        return f"{self.name} is {self.age} years old."
+
 dog1 = Dog("Buddy", 3)
 print(dog1.name)
 print(dog1.species)
+print(dog1)
+
+dog1.name = "Max"
+print(dog1.name)
+
+Dog.species = "Feline"
+print(dog1.species)
+
+#Polymorphism
+class Calculator:
+    def multiply(self, a=1, b=1, *args):
+        result = a * b
+        for num in args:
+            result *= num
+        return result
+
+calc = Calculator()
+print(calc.multiply())
+print(calc.multiply(4))
+print(calc.multiply(2, 3))
+print(calc.multiply(2, 3, 4))
+
+class Animal:
+    def sound(self):
+        return "Some generic sound"
+
+class Dog(Animal):
+    def sound(self):
+        return "Bark"
+
+class Cat(Animal):
+    def sound(self):
+        return "Meow"
+animals = [Dog(), Cat(), Animal()]
+for animal in animals:
+    print(animal.sound())
+
+class Pen:
+    def use(self):
+        return "Writing"
+
+class Eraser:
+    def use(self):
+        return "Erasing"
+
+def perform_task(tool):
+    print(tool.use())
+
+perform_task(Pen())
+perform_task(Eraser())
+
+#Inheritance
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def info(self):
+        print("Animal name:", self.name)
+
+class Dog(Animal):
+    def sound(self):
+        print(self.name, "barks")
+
+d = Dog("Buddy")
+d.info()
+d.sound()
+
+#Abstraction
+from abc import ABC, abstractmethod
+
+class Greet(ABC):
+    @abstractmethod
+    def say_hello(self):
+        pass
+
+class English(Greet):
+    def say_hello(self):
+        return "Hello!"
+
+g = English()
+print(g.say_hello())
+#greet=Greet()-->TypeError
+
+#Encapsulation
+class Employee:
+    def __init__(self, name, salary):
+        self.name = name          # public attribute
+        self._age = age        # protected
+        self.__salary = salary    # private attribute
+
+    def show_salary(self):
+        print("Salary:", self.__salary)
+
+emp = Employee("Fedrick", 50000)
+print(emp.name)
+#print(emp.__salary) ---> error
+emp.show_salary()
+
+class SubEmployee(Employee):
+    def show_age(self):
+        print("Age:", self._age)   # Accessible in subclass
+
+emp = SubEmployee("Ross", 30)
+print(emp.name)        # Public accessible
+emp.show_age()         # Protected accessed through subclass
+#////////////////////////////////////////////////////////////////////////////
+#Iterators
+s = "hello"
+it = iter(s)
+
+print(next(it))
+print(next(it))
+print(next(it))
+
+class EvenNumbers:
+    def __iter__(self):
+        self.n = 2
+        return self
+
+    def __next__(self):
+        x = self.n
+        self.n += 2
+        return x
+
+even = EvenNumbers()
+it = iter(even)
+
+print(next(it))
+print(next(it))
+print(next(it))
+print(next(it))
+print(next(it))
+
+#/////////////////////////////////////////////////////////
+#Decorators
+def decorator(func):
+    def wrapper():
+        print("Before calling the function.")
+        func()
+        print("After calling the function.")
+    return wrapper
+@decorator
+def greet():
+    print("Hello, World!")
+greet()
+
+def fun(f, x):
+    return f(x)
+def square(x):
+    return x * x
+res = fun(square, 5)
+print(res)
+
+def fun(cls):
+    cls.class_name = cls.__name__
+    return cls
+@fun
+class Person:
+    pass
+print(Person.class_name)
+
+class MathOperations:
+    @staticmethod
+    def add(x, y):
+        return x + y
+res = MathOperations.add(5, 3)
+print(res)
+
+
+class Employee:
+    raise_amount = 1.05
+    def __init__(self, name, salary):
+        self.name = name
+        self.salary = salary
+
+    @classmethod
+    def set_raise_amount(cls, amount):
+        cls.raise_amount = amount
+Employee.set_raise_amount(1.10)
+print(Employee.raise_amount)
+
+class Circle:
+    def __init__(self, radius):
+        self._radius = radius
+    @property
+    def radius(self):
+        return self._radius
+    @radius.setter
+    def radius(self, value):
+        if value >= 0:
+            self._radius = value
+        else:
+            raise ValueError("Radius cannot be negative")
+    @property
+    def area(self):
+        return 3.14159 * (self._radius ** 2)
+c = Circle(5)
+print(c.radius)
+print(c.area)
+c.radius = 10
+print(c.area)
+
+#////////////////////////////////////////////////////////////////////
+#Lambda
+a = 'danaarabasi'
+upper = lambda x: x.upper()
+print(upper(a))
+
+check = lambda x: "Positive" if x > 0 else "Negative" if x < 0 else "Zero"
+print(check(5))
+print(check(-3))
+print(check(0))
+
+calc = lambda x, y: (x + y, x * y)
+res = calc(3, 4)
+print(res)
+
+#//////////////////////////////////////////////////////
+#Context Manager
+
 
 
 
