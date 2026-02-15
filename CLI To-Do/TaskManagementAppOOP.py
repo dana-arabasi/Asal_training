@@ -2,6 +2,7 @@ def main():
     task_id_counter = 0
     manager = TasksManagement()
 
+    
     while True:
         print("\nWhat do you want to do?")
         print("1. Add a task")
