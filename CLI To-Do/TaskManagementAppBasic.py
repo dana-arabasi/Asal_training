@@ -2,6 +2,7 @@ def main():
     tasks = []
     task_id = 0
 
+    
     while True:
         print("\nWhat do you want to do?")
         print("1. Add a task")
