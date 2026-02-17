@@ -17,8 +17,7 @@ def main():
             continue
 
         if choice == 1:
-            add_task(tasks, task_id)
-            task_id += 1
+            task_id = add_task(tasks, task_id)
 
         elif choice == 2:
             list_tasks(tasks)
@@ -36,16 +35,30 @@ def main():
         else:
             print("Invalid choice, try again.")
 
+
 def add_task(tasks, task_id):
-    title = input("Enter your task's title: ")
-    description = input("Enter your task's description: ")
+    title = input("Enter your task's title: ").strip()
+
+    if not title:
+        print("Task title cannot be empty.")
+        return task_id
+
+    description = input("Enter your task's description: ").strip()
+
+    for task in tasks:
+        if task["id"] == task_id:
+            print("Task with this ID already exists.")
+            return task_id
+
     tasks.append({
         "id": task_id,
         "title": title,
         "description": description,
         "completed": False
     })
+
     print("Task added.")
+    return task_id + 1
 
 
 def list_tasks(tasks):
@@ -54,8 +67,11 @@ def list_tasks(tasks):
         return
 
     for task in tasks:
-        status = "completed" if task["completed"] else "pending"
-        print(f'{task["id"]}: {task["title"]} - {task["description"]} [{status}]')
+        status = "Completed" if task["completed"] else "Pending"
+        print(
+            f'{task["id"]}: {task["title"]} - '
+            f'{task["description"]} [{status}]'
+        )
 
 
 def remove_task(tasks):
@@ -70,6 +86,7 @@ def remove_task(tasks):
             tasks.remove(task)
             print("Task removed.")
             return
+
     print("Task not found.")
 
 
@@ -83,9 +100,12 @@ def toggle_task_status(tasks):
     for task in tasks:
         if task["id"] == task_id:
             task["completed"] = not task["completed"]
-            print("Task status updated.")
+            status = "Completed" if task["completed"] else "Pending"
+            print(f"Task marked as {status}.")
             return
+
     print("Task not found.")
+
 
 if __name__ == "__main__":
     main()

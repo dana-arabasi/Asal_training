@@ -1,5 +1,4 @@
 def main():
-    task_id_counter = 0
     mts = TasksManagement()
     factory = TaskFactory()
 
@@ -19,12 +18,14 @@ def main():
 
         match choice:
             case 1:
-                title = input("Enter your task's title: ")
-                description = input("Enter your task's description: ")
-                task = factory.create_task(task_id_counter, title, description)
+                title = input("Enter your task's title: ").strip()
+                if not title:
+                    print("Task title cannot be empty.")
+                    continue
+
+                description = input("Enter your task's description: ").strip()
+                task = factory.create_task(title, description)
                 mts.add_task(task)
-                task_id_counter += 1
-                print("Task added.")
 
             case 2:
                 mts.list_tasks()
@@ -51,9 +52,10 @@ def main():
                 print("Invalid choice, try again.")
 
 
+
 class Task:
-    def __init__(self, id, title, description):
-        self.id = id
+    def __init__(self, task_id, title, description):
+        self.id = task_id
         self.title = title
         self.description = description
         self.completed = False
@@ -61,10 +63,18 @@ class Task:
     def toggle_status(self):
         self.completed = not self.completed
 
+    def status_text(self):
+        return "Completed" if self.completed else "Pending"
+
 
 class TaskFactory:
-    def create_task(self, id, title, description):
-        return Task(id, title, description)
+    def __init__(self):
+        self._task_id_counter = 0
+
+    def create_task(self, title, description):
+        task = Task(self._task_id_counter, title, description)
+        self._task_id_counter += 1
+        return task
 
 
 class TasksManagement:
@@ -73,36 +83,49 @@ class TasksManagement:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.__task = []
+            cls._instance.__tasks = []
         return cls._instance
 
     def add_task(self, task):
-        self.__task.append(task)
+        for existing_task in self.__tasks:
+            if existing_task.id == task.id:
+                print("Task with this ID already exists.")
+                return
+
+        self.__tasks.append(task)
+        print("Task added.")
 
     def list_tasks(self):
-        if not self.__task:
+        if not self.__tasks:
             print("No tasks available.")
             return
 
-        for task in self.__task:
-            status = "completed" if task.completed else "pending"
-            print(f"{task.id}: {task.title} - {task.description} [{status}]")
+        for task in self.__tasks:
+            print(
+                f"{task.id}: {task.title} - {task.description} "
+                f"[{task.status_text()}]"
+            )
 
-    def remove_task(self, id):
-        for task in self.__task:
-            if task.id == id:
-                self.__task.remove(task)
-                print(f"Task {id} removed.")
+    def remove_task(self, task_id):
+        for task in self.__tasks:
+            if task.id == task_id:
+                self.__tasks.remove(task)
+                print(f"Task {task_id} removed.")
                 return
-        print(f"No task found with id {id}.")
+
+        print(f"No task found with id {task_id}.")
 
     def toggle_task_status(self, task_id):
-        for task in self.__task:
+        for task in self.__tasks:
             if task.id == task_id:
                 task.toggle_status()
-                print("Task status updated.")
+                print(
+                    f"Task {task_id} marked as {task.status_text()}."
+                )
                 return
+
         print("Task not found.")
+
 
 if __name__ == '__main__':
     main()
